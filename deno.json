@@ -1,0 +1,15 @@
+{
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.6.11"
+  },
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "allowJs": false,
+    "strict": true,
+    "jsx": "react-jsx"
+  }
+}
