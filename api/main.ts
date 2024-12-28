@@ -1,8 +1,8 @@
 import { Application } from "jsr:@oak/oak/application";
 import { Router } from "jsr:@oak/oak/router";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
-import { FormService } from "./methods/FormService.ts";
-import { RecordService } from "./methods/RecordService.ts";
+import { FormService } from "./methods/FormService/FormService.ts";
+import { RecordService } from "./methods/RecordService/RecordService.ts";
 
 const router = new Router();
 
