@@ -31,7 +31,7 @@ router.post("/upload", async (ctx) => {
     const recordService = new RecordService()
     recordService.addEntry(formService.csv ?? "")
     
-    ctx.response.status = 200
+    ctx.response.body = await recordService.displayEntries()
 })
 
 const app = new Application();

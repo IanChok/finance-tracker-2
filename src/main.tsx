@@ -9,7 +9,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Vite } from "./pages/vite/index.tsx";
 import { Home } from "./pages/home/index.tsx";
 
 const router = createBrowserRouter([
@@ -17,10 +16,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
   },
-  {
-    path: "vite",
-    element: <Vite />
-  }
 ]);
 
 createRoot(document.getElementById('root')!).render(

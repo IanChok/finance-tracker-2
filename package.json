@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "deno task dev:vite & deno task dev:api",
     "dev:vite": "vite",
-    "dev:api": "deno serve --watch api/main.ts",
+    "dev:api": "deno serve -A --watch api/main.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
