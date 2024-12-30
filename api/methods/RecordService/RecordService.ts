@@ -2,7 +2,7 @@ import { logger } from "../../utils/logger.ts";
 import { PROJECT_ROOT } from "../../utils/projectRootUrl.ts";
 
 // TODO: Update to only point to dir, not individual file. 
-const RECORDS_PATH = PROJECT_ROOT + '/api/records/entry.csv'
+const RECORDS_PATH = PROJECT_ROOT + '/assets/uploads/entry.csv'
 
 /**
  * Manages all entries of a particular account

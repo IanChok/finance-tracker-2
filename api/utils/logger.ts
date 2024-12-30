@@ -26,7 +26,7 @@ import {
     };
   
     // Format the message with its level and timestamp
-    const logHeader = `${bold(levelColors[level])} ${timestamp}: ${brightBlue(
+    const logHeader = `${bold(levelColors[level])} ${timestamp} ${brightBlue(
       message
     )}`;
     console.log(logHeader);

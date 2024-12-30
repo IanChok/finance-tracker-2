@@ -1,23 +1,27 @@
+import { Bank } from "./types.ts";
+
 /**
  * Handles the content of the csv file. 
  */
 export class FormService {
-
     public file: File | undefined;
-    public csv: string | undefined;
+    public transactions: string | undefined;
+    public bank: Bank | undefined;
+    public account: string | undefined
+
 
     constructor(file: File) {
         this.file = file;
     }
 
     async parseFile () {
-        await this.extractCsv(this.file);
-        this.serializeCsv()
+        await this.extractTransactions(this.file);
+        this.serializeTransactions()
     }
 
-    private async extractCsv (file: File | undefined) {
+    private async extractTransactions (file: File | undefined) {
         if(file) {
-            this.csv = await file.text();
+            this.transactions = await file.text();
         } else {
             throw new Error("No file detected. Expected a csv file.")
         }
@@ -26,9 +30,8 @@ export class FormService {
     /**
      * Remove unused column entries, keeps only the necessary ones
      */
-    private serializeCsv () {
+    private serializeTransactions() {
         
     }
-
 
 }

@@ -29,7 +29,7 @@ router.post("/upload", async (ctx) => {
     await formService.parseFile();
     
     const recordService = new RecordService()
-    recordService.addEntry(formService.csv ?? "")
+    recordService.addEntry(formService.transactions ?? "")
     
     ctx.response.body = await recordService.displayEntries()
 })
