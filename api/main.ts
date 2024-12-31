@@ -28,8 +28,8 @@ router.post("/upload", async (ctx) => {
   const formService = new FormService(file)
   await formService.parseFile();
 
-  const recordService = new RecordService()
-  recordService.addEntry(formService.transactions ?? [])
+  const recordService = new RecordService(formService)
+  recordService.addEntry()
 
   ctx.response.body = await recordService.displayEntries()
 })

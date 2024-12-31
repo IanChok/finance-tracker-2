@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc -b && vite build",
     "dev": "deno task dev:vite & deno task dev:api",
     "dev:vite": "vite",
     "dev:api": "deno run -A --watch api/main.ts",
-    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "deno test -A"
   },
   "dependencies": {
     "react": "^18.3.1",

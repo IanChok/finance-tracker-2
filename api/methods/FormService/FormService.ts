@@ -2,13 +2,13 @@ import { findIndex } from "../../utils/findIndex.ts";
 import { logger } from "../../utils/logger.ts";
 import { PROJECT_ROOT } from "../../utils/projectRootUrl.ts";
 import { Bank, Transaction } from "./types.ts";
-import { parse } from "@std/csv/parse";
+import { parse as CsvParse } from "@std/csv/parse";
 
 /**
  * Handles the content of the csv file.
  */
 export class FormService {
-  public file: File | undefined;
+  public file: File;
   public transactions: Transaction[] | undefined;
   public bank: Bank | undefined;
   public account: string | undefined;
@@ -22,7 +22,7 @@ export class FormService {
     await this.serializeTransactions(transactions);
   }
 
-  private async extractTransactions(file: File | undefined): Promise<string> {
+  async extractTransactions(file: File | undefined): Promise<string> {
     if (file) {
       return await file.text();
     } else {
@@ -30,7 +30,7 @@ export class FormService {
     }
   }
 
-  private async serializeTransactions(transactions: string) {
+  async serializeTransactions(transactions: string) {
     if (!transactions.trim()) {
       return logger(
         "WARN",
@@ -41,14 +41,14 @@ export class FormService {
       PROJECT_ROOT + "/api/methods/FormService/formats/td.json",
     );
     const TD_FORMAT = JSON.parse(content);
-    const parsedTransactions = parse(transactions, { skipFirstRow: false });
+    const parsedTransactions = CsvParse(transactions, { skipFirstRow: false });
     if (parsedTransactions.length === 0) {
       return logger("WARN", "Transaction records are empty!");
     }
     this.transactions = this._serialize(TD_FORMAT, parsedTransactions);
   }
 
-  private _serialize(format: string[], transactions: string[][]) {
+  _serialize(format: string[], transactions: string[][]) {
     const [date, description, amount, total_balance] = [
       "date",
       "description",
