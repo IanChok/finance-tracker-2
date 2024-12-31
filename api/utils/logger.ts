@@ -25,16 +25,20 @@ import {
       DEBUG: brightBlue("DEBUG"),
     };
   
+    let printMessage = '';
+
     // Format the message with its level and timestamp
     const logHeader = `${bold(levelColors[level])} ${timestamp} ${brightBlue(
       message
     )}`;
-    console.log(logHeader);
+    printMessage += logHeader;
   
     // If additional data is supplied, format it as pretty JSON
     if (data) {
       const prettyData = JSON.stringify(data, null, 2); // Pretty JSON formatting
-      console.log(brightCyan(prettyData)); // Use a color for the data
+      printMessage += '\n' + brightCyan(prettyData)
     }
+
+    console.log(printMessage)
   }
   

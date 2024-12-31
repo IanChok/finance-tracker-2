@@ -1,0 +1,1 @@
+export const findIndex = (array: any[], key: string | number) => array.findIndex((item) => item === key)

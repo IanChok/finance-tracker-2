@@ -10,7 +10,7 @@ const router = new Router();
  * TODO: List all the available API methods in the returned HTML
  */
 router.get("/", (ctx) => {
-    ctx.response.body = `<!DOCTYPE html>
+  ctx.response.body = `<!DOCTYPE html>
       <html>
         <head><title>Server</title><head>
         <body>
@@ -18,20 +18,20 @@ router.get("/", (ctx) => {
         </body>
       </html>
     `;
-  });
+});
 
 
 router.post("/upload", async (ctx) => {
-    const data = await ctx.request.body.formData()
-    const file = data.get('file') as File;
+  const data = await ctx.request.body.formData()
+  const file = data.get('file') as File;
 
-    const formService = new FormService(file)
-    await formService.parseFile();
-    
-    const recordService = new RecordService()
-    recordService.addEntry(formService.transactions ?? "")
-    
-    ctx.response.body = await recordService.displayEntries()
+  const formService = new FormService(file)
+  await formService.parseFile();
+
+  const recordService = new RecordService()
+  recordService.addEntry(formService.transactions ?? [])
+
+  ctx.response.body = await recordService.displayEntries()
 })
 
 const app = new Application();
