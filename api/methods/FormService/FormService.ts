@@ -1,17 +1,18 @@
 import { findIndex } from "../../utils/findIndex.ts";
 import { logger } from "../../utils/logger.ts";
 import { PROJECT_ROOT } from "../../utils/projectRootUrl.ts";
-import { Bank, SpendingCategory, Transaction } from "./types.ts";
+import { AiService } from "../AiService/AiService.ts";
+import { Bank, Transaction } from "./types.ts";
 import { parse as CsvParse } from "@std/csv/parse";
 
 /**
  * Handles the content of the csv file.
  */
 export class FormService {
-  public file: File;
-  public transactions: Transaction[] | undefined;
-  public bank: Bank | undefined;
-  public account: string | undefined;
+  file: File;
+  transactions: Transaction[] | undefined;
+  bank: Bank | undefined;
+  account: string | undefined;
 
   constructor(file: File) {
     this.file = file;
@@ -68,7 +69,10 @@ export class FormService {
     return { TD_FORMAT, parsedTransactions };
   }
 
-  serializeTransactions(format: string[], transactions: string[][]) {
+  serializeTransactions(
+    format: string[],
+    transactions: string[][],
+  ): Transaction[] {
     const [dateKey, descriptionKey, amountKey, total_balanceKey] = [
       "date",
       "description",
@@ -105,7 +109,14 @@ export class FormService {
     return `${date}-${description}-${amount}`;
   }
 
-  categorizeTransactions(serializedTransactions: Transaction[]) {
-    return serializedTransactions;
+  categorizeTransactions(transactions: Transaction[]) {
+    const sanitized = this.filterFieldsForGPT(transactions)
+    const aiService = new AiService();
+    aiService.categorizeTransactions(sanitized)
+    return transactions;
+  }
+
+  filterFieldsForGPT(transactions: Transaction[]) {
+    return transactions.map(({ id, description }) => ({ id, description }));
   }
 }
