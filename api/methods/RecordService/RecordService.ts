@@ -1,11 +1,10 @@
 import { logger } from "../../utils/logger.ts";
 import { PROJECT_ROOT } from "../../utils/projectRootUrl.ts";
 import { FormService } from "../FormService/FormService.ts";
-import { Transaction } from "../FormService/types.ts";
 
 // TODO: Update to only point to dir, not individual file.
 const RECORDS_PATH = PROJECT_ROOT + "/assets/records/entry.json";
-const UPLOADS_PATH = PROJECT_ROOT + "/assets/uploads/entry.json";
+const UPLOADS_PATH = PROJECT_ROOT + "/assets/uploads/entry.csv";
 
 /**
  * Manages all entries of a particular account
@@ -33,25 +32,25 @@ export class RecordService {
         "Cannot add transaction entry, as it is empty! Expected at least one transaction.",
       );
     }
-    logger("INFO", "Adding new csv entry", `${RECORDS_PATH}`);
+
     const userUploadContent = await this.formService.file.text()
-    await Deno.writeTextFile(RECORDS_PATH, userUploadContent)
+    await Deno.writeTextFile(UPLOADS_PATH, userUploadContent)
 
     await Deno.writeTextFile(
       RECORDS_PATH,
       JSON.stringify(this.formService.transactions, null, 2),
     );
+    logger("INFO", "Added new transaction", `${RECORDS_PATH}`);
   }
 
   /**
    * Returns the finance csv entries to display
    */
   async displayEntries() {
-    const decoder = new TextDecoder("utf-8");
-    const data = await Deno.readFile(RECORDS_PATH);
+    const data = await Deno.readTextFile(RECORDS_PATH);
     if (!data) {
       logger("WARN", "No data was found!", `At ${RECORDS_PATH}`);
     }
-    return decoder.decode(data);
+    return data;
   }
 }

@@ -1,7 +1,7 @@
 import { findIndex } from "../../utils/findIndex.ts";
 import { logger } from "../../utils/logger.ts";
 import { PROJECT_ROOT } from "../../utils/projectRootUrl.ts";
-import { Bank, Transaction } from "./types.ts";
+import { Bank, SpendingCategory, Transaction } from "./types.ts";
 import { parse as CsvParse } from "@std/csv/parse";
 
 /**
@@ -19,7 +19,21 @@ export class FormService {
 
   async parseFile() {
     const transactions = await this.extractTransactions(this.file);
-    await this.serializeTransactions(transactions);
+
+    const parsedResult = await this.parseTransactions(transactions);
+    if (!parsedResult) return;
+    const { TD_FORMAT, parsedTransactions } = parsedResult;
+
+    const serializedTransactions = this.serializeTransactions(
+      TD_FORMAT,
+      parsedTransactions,
+    );
+
+    const categorizedTransactions = this.categorizeTransactions(
+      serializedTransactions,
+    );
+
+    this.transactions = categorizedTransactions;
   }
 
   async extractTransactions(file: File | undefined): Promise<string> {
@@ -30,36 +44,68 @@ export class FormService {
     }
   }
 
-  async serializeTransactions(transactions: string) {
+  async parseTransactions(transactions: string) {
     if (!transactions.trim()) {
       return logger(
         "WARN",
-        "Transaction records are empty!. Expected at least one transaction in csv.",
+        "Transaction records are empty! Expected at least one transaction in csv.",
       );
     }
+
     const content = await Deno.readTextFile(
       PROJECT_ROOT + "/api/methods/FormService/formats/td.json",
     );
     const TD_FORMAT = JSON.parse(content);
+
     const parsedTransactions = CsvParse(transactions, { skipFirstRow: false });
     if (parsedTransactions.length === 0) {
-      return logger("WARN", "Transaction records are empty!");
+      return logger(
+        "WARN",
+        "Transaction records are empty! Expected at least one parsed row of the csv, but got none.",
+      );
     }
-    this.transactions = this._serialize(TD_FORMAT, parsedTransactions);
+
+    return { TD_FORMAT, parsedTransactions };
   }
 
-  _serialize(format: string[], transactions: string[][]) {
-    const [date, description, amount, total_balance] = [
+  serializeTransactions(format: string[], transactions: string[][]) {
+    const [dateKey, descriptionKey, amountKey, total_balanceKey] = [
       "date",
       "description",
       "amount",
       "total_balance",
     ].map((key: string) => findIndex(format, key));
-    return transactions.map((transaction) => ({
-      date: new Date(transaction[date]),
-      description: transaction[description],
-      amount: Number(transaction[amount]),
-      total_balance: Number(transaction[total_balance]),
-    } as Transaction));
+    return transactions.map((transaction) => {
+      const date = new Date(transaction[dateKey]);
+      const description = transaction[descriptionKey];
+      const amount = Number(transaction[amountKey]);
+      const total_balance = Number(transaction[total_balanceKey]);
+
+      const id = this.generateTransactionKey(
+        date.toISOString(),
+        description,
+        amount,
+      );
+
+      return {
+        id,
+        date,
+        description,
+        amount,
+        total_balance,
+      } as Transaction;
+    });
+  }
+
+  generateTransactionKey(
+    date: string,
+    description: string,
+    amount: string | number,
+  ): string {
+    return `${date}-${description}-${amount}`;
+  }
+
+  categorizeTransactions(serializedTransactions: Transaction[]) {
+    return serializedTransactions;
   }
 }

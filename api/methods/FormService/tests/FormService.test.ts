@@ -28,16 +28,21 @@ const TEST_TRANSACTIONS = CsvParse(decoder.decode(transactionContent), {
 const TEST_FORMAT = JSON.parse(formatContent);
 const FORM_SERVICE = new FormService(testFile);
 
-Deno.test("_serialize method", async () => {
-  const result = FORM_SERVICE._serialize(TEST_FORMAT, TEST_TRANSACTIONS);
+Deno.test("serializeTransactions() method", () => {
+  const result = FORM_SERVICE.serializeTransactions(
+    TEST_FORMAT,
+    TEST_TRANSACTIONS,
+  );
   assertEquals(result, [
     {
+      id: "2024-12-27T08:00:00.000Z-AMZN Mktp CA*Z95XQ1ID1-17.91",
       date: new Date("12/27/2024"),
       description: "AMZN Mktp CA*Z95XQ1ID1",
       amount: 17.91,
       total_balance: 779.49,
     },
     {
+      id: "2024-12-24T08:00:00.000Z-Subway 11300-13.07",
       date: new Date("12/24/2024"),
       description: "Subway 11300",
       amount: 13.07,

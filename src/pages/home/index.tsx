@@ -1,3 +1,5 @@
+import { Transaction } from "../../../api/methods/FormService/types.ts";
+
 export const Home = () => {
   const handleFileUpload = async (event: any ) => {
     const file = event.target.files[0];
@@ -19,7 +21,7 @@ export const Home = () => {
         throw new Error("Upload failed");
       }
 
-      // const data = await response.json();
+      const data = await response.json() as Transaction[];
     } catch (error) {
       alert(error);
     }
